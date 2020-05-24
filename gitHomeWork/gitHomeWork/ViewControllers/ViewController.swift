@@ -22,7 +22,6 @@ class ViewController: UIViewController {
     
     func validateFields() -> String? {
         
-        //Check that are fields are filled in
         if (usernameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" ||
             ((passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)) == nil)) {
             let alert = UIAlertController(title: "Empty text fields!", message: "Please enter your email and password to log in.", preferredStyle: .alert)
@@ -62,6 +61,5 @@ class ViewController: UIViewController {
             }
         }
     }
-    
 }
 
