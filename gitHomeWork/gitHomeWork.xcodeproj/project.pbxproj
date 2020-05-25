@@ -11,9 +11,9 @@
 		7039B1242479B1DD00C2BEE5 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7039B1232479B1DD00C2BEE5 /* DocumentsViewController.swift */; };
 		7039B1262479B20500C2BEE5 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7039B1252479B20500C2BEE5 /* MediaViewController.swift */; };
 		7039B1282479B21600C2BEE5 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7039B1272479B21600C2BEE5 /* PhotosViewController.swift */; };
+		7054F1CD247AC3910096B97B /* GitHubRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7054F1CC247AC3910096B97B /* GitHubRepository.swift */; };
 		708F494E247A7352008C51C1 /* GitHubUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708F494D247A7352008C51C1 /* GitHubUser.swift */; };
 		708F4952247A7555008C51C1 /* UIImageView+Downloaded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708F4951247A7555008C51C1 /* UIImageView+Downloaded.swift */; };
-		708F4956247A9AFC008C51C1 /* fetchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708F4955247A9AFC008C51C1 /* fetchAPI.swift */; };
 		70EEB4342475B26A00F8BAE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EEB4332475B26A00F8BAE7 /* AppDelegate.swift */; };
 		70EEB4362475B26A00F8BAE7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EEB4352475B26A00F8BAE7 /* SceneDelegate.swift */; };
 		70EEB4382475B26A00F8BAE7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EEB4372475B26A00F8BAE7 /* ViewController.swift */; };
@@ -31,9 +31,9 @@
 		7039B1232479B1DD00C2BEE5 /* DocumentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsViewController.swift; sourceTree = "<group>"; };
 		7039B1252479B20500C2BEE5 /* MediaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
 		7039B1272479B21600C2BEE5 /* PhotosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
+		7054F1CC247AC3910096B97B /* GitHubRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubRepository.swift; sourceTree = "<group>"; };
 		708F494D247A7352008C51C1 /* GitHubUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUser.swift; sourceTree = "<group>"; };
 		708F4951247A7555008C51C1 /* UIImageView+Downloaded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Downloaded.swift"; sourceTree = "<group>"; };
-		708F4955247A9AFC008C51C1 /* fetchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fetchAPI.swift; sourceTree = "<group>"; };
 		70EEB4302475B26A00F8BAE7 /* gitHomeWork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gitHomeWork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		70EEB4332475B26A00F8BAE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		70EEB4352475B26A00F8BAE7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 				70EEB454247634AB00F8BAE7 /* Constants.swift */,
 				708F494D247A7352008C51C1 /* GitHubUser.swift */,
 				708F4951247A7555008C51C1 /* UIImageView+Downloaded.swift */,
-				708F4955247A9AFC008C51C1 /* fetchAPI.swift */,
+				7054F1CC247AC3910096B97B /* GitHubRepository.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -262,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7054F1CD247AC3910096B97B /* GitHubRepository.swift in Sources */,
 				70EEB455247634AB00F8BAE7 /* Constants.swift in Sources */,
 				7039B1282479B21600C2BEE5 /* PhotosViewController.swift in Sources */,
 				7039B1262479B20500C2BEE5 /* MediaViewController.swift in Sources */,
@@ -269,7 +270,6 @@
 				70EEB4382475B26A00F8BAE7 /* ViewController.swift in Sources */,
 				708F494E247A7352008C51C1 /* GitHubUser.swift in Sources */,
 				70EEB4342475B26A00F8BAE7 /* AppDelegate.swift in Sources */,
-				708F4956247A9AFC008C51C1 /* fetchAPI.swift in Sources */,
 				7039B1242479B1DD00C2BEE5 /* DocumentsViewController.swift in Sources */,
 				70EEB4362475B26A00F8BAE7 /* SceneDelegate.swift in Sources */,
 				70EEB44A2475B8DF00F8BAE7 /* HomeViewController.swift in Sources */,

@@ -25,7 +25,7 @@ class HomeViewController: UIViewController {
     }
     
     func displayGitUserData() {
-        let url = URL(string: getGitHubUserUrl(username: gitUsername))
+        let url = URL(string: "https://api.github.com/users/\(gitUsername)")
         var urlRequest = URLRequest(url: url!)
         urlRequest.httpMethod = "GET"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -45,6 +45,28 @@ class HomeViewController: UIViewController {
         }
         task.resume()
     }
+    
+//    func displayRepositories() {
+//        let url = URL(string: "https://api.github.com/users/\(gitUsername)/repos")
+//        var urlRequest = URLRequest(url: url!)
+//        urlRequest.httpMethod = "GET"
+//        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        let task = URLSession.shared.dataTask(with: urlRequest) {(data, response, error) in
+//            if let data = data {
+//                let decoder = JSONDecoder()
+//                if let gitRepo = try? decoder.decode(GitHubRepository.self, from: data) {
+//                    DispatchQueue.main.async {
+//                        
+//                    }
+//                } else {
+//                    print(error?.localizedDescription ?? "")
+//                }
+//            } else if let error = error {
+//                print(error.localizedDescription)
+//            }
+//        }
+//        task.resume()
+//    }
     
     func updateUserInterface(with user: GitHubUser) {
         self.userNameLBL.text = user.name

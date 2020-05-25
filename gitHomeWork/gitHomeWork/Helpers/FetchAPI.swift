@@ -13,4 +13,8 @@ extension UIViewController {
         let userUrl = "https://api.github.com/users/\(username)"
         return userUrl
     }
+    func getRepoList(username:String) -> String {
+        let repoListUrl = "https://api.github.com/users/\(username)/repos"
+        return repoListUrl
+    }
 }
