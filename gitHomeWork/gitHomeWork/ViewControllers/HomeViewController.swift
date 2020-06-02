@@ -20,8 +20,9 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         displayGitUserData()
+        displayRepositories()
     }
     
     func displayGitUserData() {
@@ -46,37 +47,40 @@ class HomeViewController: UIViewController {
         task.resume()
     }
     
-//    func displayRepositories() {
-//        let url = URL(string: "https://api.github.com/users/\(gitUsername)/repos")
-//        var urlRequest = URLRequest(url: url!)
-//        urlRequest.httpMethod = "GET"
-//        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        let task = URLSession.shared.dataTask(with: urlRequest) {(data, response, error) in
-//            if let data = data {
-//                let decoder = JSONDecoder()
-//                if let gitRepo = try? decoder.decode(GitHubRepository.self, from: data) {
-//                    DispatchQueue.main.async {
-//                        
-//                    }
-//                } else {
-//                    print(error?.localizedDescription ?? "")
-//                }
-//            } else if let error = error {
-//                print(error.localizedDescription)
-//            }
-//        }
-//        task.resume()
-//    }
+    func displayRepositories() {
+        let url = URL(string: "https://api.github.com/users/\(gitUsername)/repos")
+        var urlRequest = URLRequest(url: url!)
+        urlRequest.httpMethod = "GET"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let task = URLSession.shared.dataTask(with: urlRequest) {(data, response, error) in
+            if let data = data {
+                do {
+                    let jsonSerialized = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]
+                    print(jsonSerialized)
+                } catch let error as NSError {
+                    print(error.localizedDescription)
+                }
+            } else if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+        task.resume()
+    }
     
     func updateUserInterface(with user: GitHubUser) {
         self.userNameLBL.text = user.name
         self.companyLBL.text = user.company
-        self.bioLBL.text = user.bio
+//        self.bioLBL.text = user.bio
         imageView.downloaded(from: user.avatarURL ?? "https://dummyimage.com/300x300/000/ffffff&text=No+avatar+available")
+    }
+    
+    func updateRepoDropdown(with repo: GitHubRepository) {
+        self.bioLBL.text = repo.name
     }
     
     @IBAction func searchUser(_ sender: UIButton) {
         gitUsername = self.searchInputField.text!
         displayGitUserData()
+        displayRepositories()
     }
 }
