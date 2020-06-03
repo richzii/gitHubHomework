@@ -31,8 +31,8 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.delegate = self as! UITableViewDelegate
-        tableView.dataSource = self as! UITableViewDataSource
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.register(CellClass.self, forCellReuseIdentifier: "Cell")
         displayGitUserData()
         displayRepositories()
@@ -70,7 +70,7 @@ class HomeViewController: UIViewController {
                     let decoder = JSONDecoder()
                     if let repositories = try? decoder.decode([GitHubRepository].self, from: data) {
                         DispatchQueue.main.async {
-                            self.updateRepoDropdown(with: repositories)
+                            self.allRepos = repositories
                         }
                     } else {
                         print(error?.localizedDescription ?? "")
@@ -87,10 +87,6 @@ class HomeViewController: UIViewController {
         self.companyLBL.text = user.company
         self.bioLBL.text = user.bio
         imageView.downloaded(from: user.avatarURL ?? "https://dummyimage.com/300x300/000/ffffff&text=No+avatar+available")
-    }
-    
-    func updateRepoDropdown(with repo: [GitHubRepository]) {
-        allRepos = repo
     }
     
     func addTransparentView(frames: CGRect) {
