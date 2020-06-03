@@ -8,19 +8,32 @@
 
 import UIKit
 
+class CellClass: UIViewController {
+    
+}
+
 class HomeViewController: UIViewController {
 
+    let transparentView = UIView()
+    let tableView = UITableView()
+    var selectedButton = UIButton()
     var gitUsername = "ioslekcijas"
+    var repoCount = 0
+    var allRepos = [GitHubRepository]()
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var userNameLBL: UILabel!
     @IBOutlet weak var companyLBL: UILabel!
     @IBOutlet weak var bioLBL: UILabel!
     @IBOutlet weak var searchInputField: UITextField!
+    @IBOutlet weak var selectRepositoryBtn: UIButton!
+    @IBOutlet weak var downloadRepositoryBtn: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        tableView.delegate = self as! UITableViewDelegate
+        tableView.dataSource = self as! UITableViewDataSource
+        tableView.register(CellClass.self, forCellReuseIdentifier: "Cell")
         displayGitUserData()
         displayRepositories()
     }
@@ -54,12 +67,14 @@ class HomeViewController: UIViewController {
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let task = URLSession.shared.dataTask(with: urlRequest) {(data, response, error) in
             if let data = data {
-                do {
-                    let jsonSerialized = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]
-                    print(jsonSerialized)
-                } catch let error as NSError {
-                    print(error.localizedDescription)
-                }
+                    let decoder = JSONDecoder()
+                    if let repositories = try? decoder.decode([GitHubRepository].self, from: data) {
+                        DispatchQueue.main.async {
+                            self.updateRepoDropdown(with: repositories)
+                        }
+                    } else {
+                        print(error?.localizedDescription ?? "")
+                    }
             } else if let error = error {
                 print(error.localizedDescription)
             }
@@ -70,17 +85,64 @@ class HomeViewController: UIViewController {
     func updateUserInterface(with user: GitHubUser) {
         self.userNameLBL.text = user.name
         self.companyLBL.text = user.company
-//        self.bioLBL.text = user.bio
+        self.bioLBL.text = user.bio
         imageView.downloaded(from: user.avatarURL ?? "https://dummyimage.com/300x300/000/ffffff&text=No+avatar+available")
     }
     
-    func updateRepoDropdown(with repo: GitHubRepository) {
-        self.bioLBL.text = repo.name
+    func updateRepoDropdown(with repo: [GitHubRepository]) {
+        allRepos = repo
+    }
+    
+    func addTransparentView(frames: CGRect) {
+        let window = UIApplication.shared.keyWindow
+        transparentView.frame = window?.frame ?? self.view.frame
+        self.view.addSubview(transparentView)
+        
+        tableView.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height, width: frames.width, height: 0)
+        self.view.addSubview(tableView)
+        tableView.layer.cornerRadius = 5
+        
+        transparentView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(removeTransparentView))
+        transparentView.addGestureRecognizer(tapGesture)
+        transparentView.alpha = 0
+        UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0,
+                       initialSpringVelocity: 1.0, options: .curveEaseIn, animations: {
+                        self.transparentView.alpha = 0.5
+                        self.tableView.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height + 5, width: frames.width, height: 200)
+        }, completion: nil)
+    }
+    
+    @objc func removeTransparentView() {
+        let frames = selectedButton.frame
+        UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0,
+                       initialSpringVelocity: 1.0, options: .curveEaseIn, animations: {
+                        self.transparentView.alpha = 0.0
+                        self.tableView.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height, width: frames.width, height: 0)
+        }, completion: nil)
+    }
+    
+    @IBAction func selectRepository(_ sender: UIButton) {
+        selectedButton = sender
+        addTransparentView(frames: sender.frame)
     }
     
     @IBAction func searchUser(_ sender: UIButton) {
         gitUsername = self.searchInputField.text!
         displayGitUserData()
         displayRepositories()
+    }
+}
+
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return repoCount
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        cell.textLabel?.text = allRepos[indexPath.row].name
+        return cell
     }
 }
