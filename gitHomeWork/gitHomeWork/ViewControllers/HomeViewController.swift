@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CellClass: UIViewController {
+class CellClass: UITableViewCell {
     
 }
 
@@ -18,8 +18,9 @@ class HomeViewController: UIViewController {
     let tableView = UITableView()
     var selectedButton = UIButton()
     var gitUsername = "ioslekcijas"
-    var repoCount = 0
     var allRepos = [GitHubRepository]()
+    var allRepoUrls = [RepoDownloadURL]()
+    var repoContentPath = "api.github.com/repos/"
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var userNameLBL: UILabel!
@@ -35,7 +36,7 @@ class HomeViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(CellClass.self, forCellReuseIdentifier: "Cell")
         displayGitUserData()
-        displayRepositories()
+        getRepositories()
     }
     
     func displayGitUserData() {
@@ -60,7 +61,7 @@ class HomeViewController: UIViewController {
         task.resume()
     }
     
-    func displayRepositories() {
+    func getRepositories() {
         let url = URL(string: "https://api.github.com/users/\(gitUsername)/repos")
         var urlRequest = URLRequest(url: url!)
         urlRequest.httpMethod = "GET"
@@ -75,6 +76,28 @@ class HomeViewController: UIViewController {
                     } else {
                         print(error?.localizedDescription ?? "")
                     }
+            } else if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+        task.resume()
+    }
+    
+    func getDownloadUrl() {
+        let url = URL(string: "https://\(repoContentPath)")
+        var urlRequest = URLRequest(url: url!)
+        urlRequest.httpMethod = "GET"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let task = URLSession.shared.dataTask(with: urlRequest) {(data, response, error) in
+            if let data = data {
+                let decoder = JSONDecoder()
+                if let downloadUrl = try? decoder.decode([RepoDownloadURL].self, from: data) {
+                    DispatchQueue.main.async {
+                        self.allRepoUrls = downloadUrl
+                    }
+                } else {
+                    print(error?.localizedDescription ?? "")
+                }
             } else if let error = error {
                 print(error.localizedDescription)
             }
@@ -99,6 +122,7 @@ class HomeViewController: UIViewController {
         tableView.layer.cornerRadius = 5
         
         transparentView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        tableView.reloadData()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(removeTransparentView))
         transparentView.addGestureRecognizer(tapGesture)
@@ -106,7 +130,7 @@ class HomeViewController: UIViewController {
         UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0,
                        initialSpringVelocity: 1.0, options: .curveEaseIn, animations: {
                         self.transparentView.alpha = 0.5
-                        self.tableView.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height + 5, width: frames.width, height: 200)
+                        self.tableView.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height + 5, width: frames.width, height: CGFloat(self.allRepos.count * 50))
         }, completion: nil)
     }
     
@@ -127,18 +151,45 @@ class HomeViewController: UIViewController {
     @IBAction func searchUser(_ sender: UIButton) {
         gitUsername = self.searchInputField.text!
         displayGitUserData()
-        displayRepositories()
+        getRepositories()
+    }
+    
+    
+    @IBAction func downloadRepoContent(_ sender: UIButton) {
+        for curUrl in self.allRepoUrls {
+            print(curUrl.downloadURL!)
+            guard let url = URL(string: curUrl.downloadURL!) else {return}
+            let urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue())
+            let downloadTask = urlSession.downloadTask(with: url)
+            downloadTask.resume()
+        }
     }
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource, URLSessionDownloadDelegate {
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        print("File downloaded!")
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return repoCount
+        return allRepos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.textLabel?.text = allRepos[indexPath.row].name
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedButton.setTitle(allRepos[indexPath.row].name, for: .normal)
+        repoContentPath = "\(repoContentPath)\(gitUsername)/\(allRepos[indexPath.row].name!)/contents"
+        print("PATH: \(repoContentPath)")
+        getDownloadUrl()
+        removeTransparentView()
     }
 }

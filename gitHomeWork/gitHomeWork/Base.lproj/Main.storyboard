@@ -137,6 +137,7 @@
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
+                                    <action selector="downloadRepoContent:" destination="hMo-dj-bzg" eventType="touchUpInside" id="Dkt-wZ-ohG"/>
                                     <action selector="searchUser:" destination="hMo-dj-bzg" eventType="touchUpInside" id="eav-bT-VBR"/>
                                 </connections>
                             </button>
