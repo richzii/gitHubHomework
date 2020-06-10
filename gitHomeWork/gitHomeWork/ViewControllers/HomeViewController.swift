@@ -157,20 +157,30 @@ class HomeViewController: UIViewController {
     
     @IBAction func downloadRepoContent(_ sender: UIButton) {
         for curUrl in self.allRepoUrls {
+            print(curUrl.name!)
             print(curUrl.downloadURL!)
-            guard let url = URL(string: curUrl.downloadURL!) else {return}
-            let urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue())
-            let downloadTask = urlSession.downloadTask(with: url)
-            downloadTask.resume()
+            let url = URL(string: curUrl.downloadURL!)!
+            let task = URLSession.shared.downloadTask(with: url) {(urlresponse, response, error) in
+                guard let originUrl = urlresponse else {return}
+                do{
+                    //Get path to directory
+                    let path = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                    //Giving name to file
+                    let newUrl = path.appendingPathComponent(curUrl.name!)
+                    //Move file from old url to new url
+                    try FileManager.default.moveItem(at: originUrl, to: newUrl)
+                } catch {
+                    print(error.localizedDescription);
+                    return
+                }
+            }
+            task.resume()
         }
+        displayGitUserData()
     }
 }
 
-extension HomeViewController: UITableViewDelegate, UITableViewDataSource, URLSessionDownloadDelegate {
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        print("File downloaded!")
-    }
-    
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return allRepos.count
     }

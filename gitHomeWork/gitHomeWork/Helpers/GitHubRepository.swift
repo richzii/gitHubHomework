@@ -18,9 +18,10 @@ struct GitHubRepository: Codable {
 }
 
 struct RepoDownloadURL: Codable {
-    let downloadURL: String!
+    let downloadURL, name: String!
 
     enum CodingKeys: String, CodingKey {
+        case name
         case downloadURL = "download_url"
     }
 }
