@@ -10,9 +10,18 @@ import Foundation
 
 // MARK: - GitHubRepository
 struct GitHubRepository: Codable {
-    let name: String?
+    let name: String!
 
     enum CodingKeys: String, CodingKey {
         case name
+    }
+}
+
+struct RepoDownloadURL: Codable {
+    let downloadURL, name: String!
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case downloadURL = "download_url"
     }
 }
