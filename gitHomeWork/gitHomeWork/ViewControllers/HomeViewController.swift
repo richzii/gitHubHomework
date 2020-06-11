@@ -157,8 +157,8 @@ class HomeViewController: UIViewController {
     
     @IBAction func downloadRepoContent(_ sender: UIButton) {
         for curUrl in self.allRepoUrls {
-            print(curUrl.name!)
-            print(curUrl.downloadURL!)
+//            print(curUrl.name!)
+//            print(curUrl.downloadURL!)
             let url = URL(string: curUrl.downloadURL!)!
             let task = URLSession.shared.downloadTask(with: url) {(urlresponse, response, error) in
                 guard let originUrl = urlresponse else {return}
@@ -177,6 +177,8 @@ class HomeViewController: UIViewController {
             task.resume()
         }
         displayGitUserData()
+        getRepositories()
+        print("GITHUB USER: \(gitUsername)")
     }
 }
 
