@@ -9,9 +9,15 @@
 import UIKit
 
 class MediaViewController: UIViewController {
+    
+    @IBOutlet weak var tableView: UITableView!
+    var mediaFileTitles = [String]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
         
         // Get the document directory url
         let documentsUrl =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -19,23 +25,27 @@ class MediaViewController: UIViewController {
         do {
             // Get the directory contents urls (including subfolders urls)
             let directoryContents = try FileManager.default.contentsOfDirectory(at: documentsUrl, includingPropertiesForKeys: nil)
-            // print(directoryContents)
-
-            // Get MP4 files:
-            let mp4Files = directoryContents.filter{ $0.pathExtension == "mp4" }
-            print("MP4 urls:",mp4Files)
-            let mp4FileTitles = mp4Files.map{ $0.deletingPathExtension().lastPathComponent }
-            print("MP4 list:", mp4FileTitles)
-            
-            // Get MP3 files:
-            let mp3Files = directoryContents.filter{ $0.pathExtension == "mp3" }
-            print("mp3 urls:",mp3Files)
-            let mp3FileNames = mp3Files.map{ $0.deletingPathExtension().lastPathComponent }
-            print("mp3 list:", mp3FileNames)
+            // Get media files:
+            let mediaFiles = directoryContents.filter{ $0.pathExtension == "mp4" || $0.pathExtension == "mp3"}
+            mediaFileTitles = mediaFiles.map{ $0.deletingPathExtension().lastPathComponent }
+            print("Media file list:", mediaFileTitles)
 
         } catch {
             print(error)
         }
 
+    }
+}
+extension MediaViewController: UITableViewDelegate, UITableViewDataSource {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("NUMBER OF ROWS: \(mediaFileTitles.count)")
+        return mediaFileTitles.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "medCell") as! MediaCell
+        cell.titleLabel.text = mediaFileTitles[indexPath.row]
+        
+        return cell
     }
 }
